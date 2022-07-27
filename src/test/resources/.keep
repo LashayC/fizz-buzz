@@ -1,0 +1,2 @@
+This file was made to put in an empty directory so that when its also pushed to git and when you pull, the directory will still come down.
+Empty directories are lost when cloning.
