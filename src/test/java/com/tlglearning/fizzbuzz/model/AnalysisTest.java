@@ -4,9 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.EnumSet;
 import java.util.Set;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -69,15 +68,28 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-   //fail("This test has yet to be implemented");
+   assertThrows(IllegalArgumentException.class, new InvalidInvocation(analysis, value) ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
 
-    try{
+  }
+//commit message, removed try/catch to test argument and replaced with assert.
+
+
+  private class InvalidInvocation implements Executable {//NOTE nested class goes below everything else. Good for when the class only makes sense in context of current class.
+    //NOTE the static on this class means that when instances of it are created, it won't be able to see the enclosing class. Remove it to stop this behavior.
+
+    //FIELDS
+    //private final Analysis analysis;//NOTE this is already above.
+    private final int value;
+
+    //CONSTRUCTORS
+    public InvalidInvocation(Analysis analysis, int value) {
+      //this.analysis = analysis; //NOTE redundant
+      this.value = value;
+    }
+
+    @Override
+    public void execute() throws Throwable {
       analysis.analyze(value);
-      fail(); //NOTE this goes hee bc if the try doesn't throw an exception then it means this test has failed.
-    }catch (IllegalArgumentException e){
-      //Do nothing; this is the expected behavior.
     }
   }
-
-
 }
