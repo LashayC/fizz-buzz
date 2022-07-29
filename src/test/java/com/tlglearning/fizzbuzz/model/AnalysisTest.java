@@ -68,29 +68,30 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-   assertThrows(IllegalArgumentException.class, new InvalidInvocation(value)  ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
+    //NOTE: moved the nested class to inside the test that used it. Now known as a local class. This means it has the same context as its enclosing method.
+    class InvalidInvocation implements Executable {//NOTE when refactoring from top level to nested its created as a static nested class. Static means it can'ts see the enclosing class around it that has the static descriptor.
+      //NOTE: To make a nested class a pure nested class, remove the static descriptor. You can then access objects from the enclosing class. Below Analysis analysis is commented out since its accessed from above.
 
-  }
-//commit message, removed try/catch to test argument and replaced with assert.
-
-
-  class InvalidInvocation implements Executable {//NOTE when refactoring from top level to nested its created as a static nested class. Static means it can'ts see the enclosing class around it that has the static descriptor.
-    //NOTE: To make a nested class a pure nested class, remove the static descriptor. You can then access objects from the enclosing class. Below Analysis analysis is commented out since its accessed from above.
-
-    //FIELDS
+      //FIELDS
 //    private final Analysis analysis;//NOTE redundant since the class this is being accessed from enclosing class.
-    private final int value;
+      private final int value;
 
-    //CONSTRUCTORS
-    public InvalidInvocation( int value) {
+      //CONSTRUCTORS
+      public InvalidInvocation( int value) {
 //      this.analysis = analysis; //NOTE was redundant
-      this.value = value;
+        this.value = value;
+      }
+
+      @Override
+      public void execute() throws Throwable {
+        analysis.analyze(value);
+        //AnalysisTest.this.analysis.analyze(value); //NOTE you don't need to refenerence the AnalysisTest.this to get at the current instance of Analysis in the instance class. The compiler sees analysis.analyze, doesn't see an instance in the nested class, then expands scropt to look outside it.
+      }
     }
 
-    @Override
-    public void execute() throws Throwable {
-      analysis.analyze(value);
-     //AnalysisTest.this.analysis.analyze(value); //NOTE you don't need to refenerence the AnalysisTest.this to get at the current instance of Analysis in the instance class. The compiler sees analysis.analyze, doesn't see an instance in the nested class, then expands scropt to look outside it.
-    }
+    assertThrows(IllegalArgumentException.class, new InvalidInvocation(value)  ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
+
   }
+
+
 }
