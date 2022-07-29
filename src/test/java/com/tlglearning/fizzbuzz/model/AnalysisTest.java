@@ -68,16 +68,23 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-//    Executable invalidInvocation = ;
 
-    assertThrows(IllegalArgumentException.class, new Executable() {//NOTE: changed anonymous class to instantiate right inside of assertThrows instead of assigning it to a variable first. Now its inline.
-      @Override
-      public void execute() throws Throwable {
-        analysis.analyze(value);
-      }
-    }  );
+    assertThrows(IllegalArgumentException.class, () -> analysis.analyze(value)); //NOTE the anonymous class replaced with lambda. To chane, click anon function, opt+return, select lambda.  -> is the lambda operator. Tells the compiler you're using shorthand.
+      //NOTE the line of analysis.analyse(..) was the only thing being executed in the previous anonymous function. Lambda recognizes this and its all thats put in the assertThrows
+      //NOTE it knows that the second param in assertThrows is executable because thats what the second param of the assert expects. Then its lots of inference
+      //NOTE as far as compiler knows its just in instance of something thats an executable. Lambda or anon class doesnt affect it.
+      //NOTE only use lambda for instances where you're implementing a @funtionalInterface. Anonymous functions aren't limited the same way. Lambdas are great for tests.
+      //NOTE Java doesn't let you have functions independent of a class. There fore you have @functionalInterfaces, which can be passed around. Then you also have lambdas to take it further.
 
   }
+
+//    assertThrows(IllegalArgumentException.class, new Executable() { TIP: This is the previous anonymous class converted to a lambda above. It knows that analysis.analyze(value) only thing being executed. Ie its a functional interface that only has one method to implement.
+//      @Override
+//      public void execute() throws Throwable {
+//        analysis.analyze(value);
+//        //AnalysisTest.this.analysis.analyze(value);
+//      }
+//    }  );
 
 
 }
