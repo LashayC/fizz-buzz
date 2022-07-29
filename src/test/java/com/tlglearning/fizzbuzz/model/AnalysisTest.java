@@ -68,28 +68,17 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-    //NOTE: moved the nested class to inside the test that used it. Now known as a local class. This means it has the same context as its enclosing method.
-    class InvalidInvocation implements Executable {//NOTE when refactoring from top level to nested its created as a static nested class. Static means it can'ts see the enclosing class around it that has the static descriptor.
-      //NOTE: To make a nested class a pure nested class, remove the static descriptor. You can then access objects from the enclosing class. Below Analysis analysis is commented out since its accessed from above.
-
-      //FIELDS
-//    private final Analysis analysis;//NOTE redundant since the class this is being accessed from enclosing class.
-      private final int value;
-
-      //CONSTRUCTORS
-      public InvalidInvocation( int value) {
-//      this.analysis = analysis; //NOTE was redundant
-        this.value = value;
-      }
-
+    Executable invalidInvocation = new Executable() {//NOTE: defined an anonymous class. We define an instance of it here bc we have to. If you tried to do it later you have name to invoke it by.
+      //NOTE removed field and constructor because it has same context as enclosing method.
       @Override
       public void execute() throws Throwable {
         analysis.analyze(value);
         //AnalysisTest.this.analysis.analyze(value); //NOTE you don't need to refenerence the AnalysisTest.this to get at the current instance of Analysis in the instance class. The compiler sees analysis.analyze, doesn't see an instance in the nested class, then expands scropt to look outside it.
       }
-    }
+    };
 
-    assertThrows(IllegalArgumentException.class, new InvalidInvocation(value)  ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
+    assertThrows(IllegalArgumentException.class, invalidInvocation  ); //NOTE you change the given exception to this because you've instantiated it above in the anonymous class.
+    //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
 
   }
 
