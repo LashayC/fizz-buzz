@@ -68,10 +68,29 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-   assertThrows(IllegalArgumentException.class, new InvalidInvocation(analysis, value)  ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
+   assertThrows(IllegalArgumentException.class, new InvalidInvocation(value)  ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
 
   }
 //commit message, removed try/catch to test argument and replaced with assert.
 
 
+  class InvalidInvocation implements Executable {//NOTE when refactoring from top level to nested its created as a static nested class. Static means it can'ts see the enclosing class around it that has the static descriptor.
+    //NOTE: To make a nested class a pure nested class, remove the static descriptor. You can then access objects from the enclosing class. Below Analysis analysis is commented out since its accessed from above.
+
+    //FIELDS
+//    private final Analysis analysis;//NOTE redundant since the class this is being accessed from enclosing class.
+    private final int value;
+
+    //CONSTRUCTORS
+    public InvalidInvocation( int value) {
+//      this.analysis = analysis; //NOTE was redundant
+      this.value = value;
+    }
+
+    @Override
+    public void execute() throws Throwable {
+      analysis.analyze(value);
+     //AnalysisTest.this.analysis.analyze(value); //NOTE you don't need to refenerence the AnalysisTest.this to get at the current instance of Analysis in the instance class. The compiler sees analysis.analyze, doesn't see an instance in the nested class, then expands scropt to look outside it.
+    }
+  }
 }
