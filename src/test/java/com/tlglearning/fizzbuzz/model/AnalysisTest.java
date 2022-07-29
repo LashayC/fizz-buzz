@@ -68,17 +68,14 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-    Executable invalidInvocation = new Executable() {//NOTE: defined an anonymous class. We define an instance of it here bc we have to. If you tried to do it later you have name to invoke it by.
-      //NOTE removed field and constructor because it has same context as enclosing method.
+//    Executable invalidInvocation = ;
+
+    assertThrows(IllegalArgumentException.class, new Executable() {//NOTE: changed anonymous class to instantiate right inside of assertThrows instead of assigning it to a variable first. Now its inline.
       @Override
       public void execute() throws Throwable {
         analysis.analyze(value);
-        //AnalysisTest.this.analysis.analyze(value); //NOTE you don't need to refenerence the AnalysisTest.this to get at the current instance of Analysis in the instance class. The compiler sees analysis.analyze, doesn't see an instance in the nested class, then expands scropt to look outside it.
       }
-    };
-
-    assertThrows(IllegalArgumentException.class, invalidInvocation  ); //NOTE you change the given exception to this because you've instantiated it above in the anonymous class.
-    //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
+    }  );
 
   }
 
