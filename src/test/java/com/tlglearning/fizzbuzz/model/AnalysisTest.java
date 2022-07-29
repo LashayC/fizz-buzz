@@ -50,10 +50,10 @@ class AnalysisTest {
 
   }
 
-  //NOTE you can create a csv file(txt file) that contains the argument params. Makes it easier to edit outside of code.
-  //1. Right click on 'resources under 'test'
-  //2. New Kotlin file
-  //3. Match file name to package then name of method you want to put the args for 'com/tlglearning/fizzbuzz/model/neither.csv'
+  //NOTE you can create a csv file(txt file) that contains the argument params. Makes it easier to edit outside of code
+  //NOTE 1. Right click on 'resources under 'test'
+  //NOTE 2. New Kotlin file
+  //NOTE 3. Match file name to package then name of method you want to put the args for 'com/tlglearning/fizzbuzz/model/neither.csv'
   //3.2. You use slashes so that IntelliJ will put it into a directory. .s just indicate file names.
   //4. Add the value source set to the csv file
   //5. Next to value source for chosen method, change it to resources = <filename.csv>
@@ -68,28 +68,10 @@ class AnalysisTest {
   @ParameterizedTest
   @ValueSource(ints = {-1, -3, -5, -15}) //NOTE this is testing for params of neg values. Checking for thrown exceptions.
   void analyze_negative(int value){
-   assertThrows(IllegalArgumentException.class, new InvalidInvocation(analysis, value) ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
+   assertThrows(IllegalArgumentException.class, new InvalidInvocation(analysis, value)  ); //NOTE the InvalidInvocation class was created to have a method that throws an Executable exception.
 
   }
 //commit message, removed try/catch to test argument and replaced with assert.
 
 
-  private class InvalidInvocation implements Executable {//NOTE nested class goes below everything else. Good for when the class only makes sense in context of current class.
-    //NOTE the static on this class means that when instances of it are created, it won't be able to see the enclosing class. Remove it to stop this behavior.
-
-    //FIELDS
-    //private final Analysis analysis;//NOTE this is already above.
-    private final int value;
-
-    //CONSTRUCTORS
-    public InvalidInvocation(Analysis analysis, int value) {
-      //this.analysis = analysis; //NOTE redundant
-      this.value = value;
-    }
-
-    @Override
-    public void execute() throws Throwable {
-      analysis.analyze(value);
-    }
-  }
 }
