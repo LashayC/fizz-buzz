@@ -14,13 +14,13 @@ class AnalysisTest {
   //NOTE you need to test all 4 behaviors: fizz, buzz, fizzbuzz, and none
 
   static final Set<State> expectedFizz = EnumSet.of(State.FIZZ); //NOTE you can put each of the Sets up here for readability and reduce the number of times Set is instantiated.
-  private Analysis analysis;
+//  private Analysis analysis;
 
-//  final Analysis analysis = new Analysis(); NOTE: You could also have written the final method like this.
-  @BeforeEach
-  void setUp() {
-    analysis = new Analysis();
-  }
+  final Analysis analysis = new Analysis(); //NOTE: You could also have written the final method like this.
+//  @BeforeEach
+//  void setUp() {
+//    analysis = new Analysis();
+//  }
 
   //NOTE: 1) when testing a method with mult values, you can used ParameterizedTest to avoid creating mult methods that ea just test one value. Its telling JUnit to invoke this method mult times for a given number of parameters.
   //NOTE: 2) You add a param (int value) to the method below so that JUnit can pass in those given paremeters as it repeatedly invokes it.
@@ -54,9 +54,9 @@ class AnalysisTest {
   //NOTE 1. Right click on 'resources under 'test'
   //NOTE 2. New Kotlin file
   //NOTE 3. Match file name to package then name of method you want to put the args for 'com/tlglearning/fizzbuzz/model/neither.csv'
-  //3.2. You use slashes so that IntelliJ will put it into a directory. .s just indicate file names.
-  //4. Add the value source set to the csv file
-  //5. Next to value source for chosen method, change it to resources = <filename.csv>
+  //NOTE 3.2. You use slashes so that IntelliJ will put it into a directory. .s just indicate file names.
+  //NOTE 4. Add the value source set to the csv file
+  //NOTE 5. Next to value source for chosen method, change it to resources = <filename.csv>
   @ParameterizedTest
   @CsvFileSource(resources = "neither.csv", numLinesToSkip = 1) //NOTE the num lines to skip skips over the values header in csv
   void analyze_neither(int value){
